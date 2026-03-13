@@ -1089,7 +1089,43 @@ Content-Type: application/json
 
 ## 🏪 15. Stats — Store Owner (`/api/stats/store`)
 
-### GET `/api/stats/store/revenue` — Doanh thu theo tháng
+### GET `/api/stats/store/dashboard` — Dashboard tổng hợp (Overview + Chart)
+**Auth:** 🔒 Role: `store_owner`, `admin`
+**Query:** Không cần (Tự nhận diện `store_id` từ JWT)
+
+> 💡 API tối ưu cho màn hình Dashboard. Trả về `overview` + `chart_data` trong **1 request duy nhất**, Frontend không cần tự cộng dồn.
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Dashboard cửa hàng",
+  "data": {
+    "overview": {
+      "revenue_this_month": 2500000,
+      "revenue_this_year": 15800000,
+      "total_orders_this_year": 67
+    },
+    "chart_data": [
+      { "month": "T1", "revenue": 1200000, "order_count": 5 },
+      { "month": "T2", "revenue": 850000, "order_count": 3 },
+      { "month": "T3", "revenue": 2500000, "order_count": 12 },
+      "...đủ 12 tháng (T1–T12)"
+    ]
+  }
+}
+```
+
+| Field | Mô tả |
+|-------|-------|
+| `overview.revenue_this_month` | Tổng doanh thu tháng hiện tại (đơn `delivered`) |
+| `overview.revenue_this_year` | Tổng doanh thu từ đầu năm |
+| `overview.total_orders_this_year` | Tổng số đơn hàng đã giao trong năm |
+| `chart_data` | Mảng 12 phần tử (T1–T12), tháng chưa có dữ liệu = `0` |
+
+---
+
+### GET `/api/stats/store/revenue` — Doanh thu theo tháng (chi tiết)
 **Auth:** 🔒 Role: `store_owner`, `admin`
 **Query:** Không cần (Tự nhận diện `store_id` từ JWT)
 
